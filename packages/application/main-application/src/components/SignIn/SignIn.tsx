@@ -7,8 +7,10 @@ import './SignIn.css'
 import { FC, useState } from 'react'
 import { loginByPasswordAction } from '@/api'
 import { useNavigate } from 'react-router-dom'
+import Auth from '../../auth'
 
 const SignIn: FC = () => {
+  const { login } = Auth()
   const navigate = useNavigate()
   const [username, setUsername] = useState<string>('')
   const [password, setPassword] = useState<string>('')
@@ -70,6 +72,7 @@ const SignIn: FC = () => {
                 const result = loginByPasswordAction(username, password)
                 result.then(
                   () => {
+                    login()
                     navigate('/workspace')
                   },
                   () => {

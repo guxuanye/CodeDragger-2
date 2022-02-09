@@ -22,7 +22,9 @@ instance.interceptors.request.use((config: any) => {
 instance.interceptors.response.use(
   (response: any) => {
     //这里写响应拦截内容
-
+    // if (response.state === 401) {
+    //   isLogin = false
+    // }
     return response
   },
   // 服务器状态码不是200的情况

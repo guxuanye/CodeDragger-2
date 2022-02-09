@@ -8,6 +8,7 @@ import SignUp from './components/SignUp/SignUp'
 import Workspace from './components/Workspace/index'
 import Landing from './components/Landing/index'
 import Nomatch from './components/Nomatch/index'
+import { AuthProvider, RequireAuth } from './auth'
 
 const DarggerEditor = React.lazy(() => import('@cdl-pkg/dragger-editor'))
 
@@ -36,6 +37,7 @@ const Test = () => {
   )
 }
 
+const isLogin = true
 const routes = [
   { name: 'main', path: '/', component: <Landing />, key: 'landing' },
   { name: 'login', path: '/login', component: <SignIn />, key: 'login' },
@@ -43,12 +45,14 @@ const routes = [
   {
     name: 'workspace',
     path: '/workspace',
+    access: isLogin,
     component: <Workspace />,
     key: 'workspace'
   },
   {
     name: 'lowcode',
     path: '/editor/:id',
+    access: isLogin,
     component: <DarggerEditor />,
     key: 'lowcode'
   },
@@ -65,12 +69,21 @@ const App: FC = () => {
     <div className='main'>
       <Suspense fallback={<div>Loading...</div>}>
         <Router>
-          <Routes>
-            {routes.map((item) => (
-              <Route path={item.path} element={item.component} key={item.key} />
-            ))}
-            <Route path='*' element={<Nomatch />}></Route>
-          </Routes>
+          <AuthProvider>
+            <Routes>
+              {routes.slice(3, routes.length).map((item) => (
+                <Route
+                  path={item.path}
+                  element={<RequireAuth>{item.component}</RequireAuth>}
+                  key={item.key}
+                />
+              ))}
+              <Route path='/' element={<Landing />}></Route>
+              <Route path='/login' element={<SignIn />}></Route>
+              <Route path='/resigter' element={<SignUp />}></Route>
+              <Route path='*' element={<Nomatch />}></Route>
+            </Routes>
+          </AuthProvider>
         </Router>
       </Suspense>
     </div>
